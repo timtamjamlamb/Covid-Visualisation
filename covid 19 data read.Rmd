@@ -1,0 +1,62 @@
+---
+title: "Covid 19 Data Read"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(lubridate)
+library(janitor)
+```
+
+```{r make function}
+make_url <- function(date) {
+  date_chr <- format(date, "%m-%d-%Y")
+  setNames(glue::glue("https://github.com/CSSEGISandData/COVID-19/raw/master/csse_covid_19_data/csse_covid_19_daily_reports/{date_chr}.csv"),
+  date_chr)
+}
+```
+
+
+```{r test make}
+library(lubridate)
+dates <- seq(mdy("03-01-2020"), mdy("08-01-2021"), by = 1)
+urls <- make_url(dates)
+head(urls, 2)
+tail(urls, 2)
+```
+
+```{r read function}
+read_covid19 <- function(url) {
+  data <- read_csv(url, 
+    col_types = cols(Last_Update = "_", `Last Update` = "_"))
+  rename_with(data, janitor::make_clean_names)
+}
+```
+
+
+```{r create dates}
+dates <- seq(mdy("03-01-2020"), mdy("08-01-2021"), by = 1)
+urls <- make_url(dates)
+read_covid19(urls[1])
+read_covid19(urls[length(urls)])
+```
+
+```{r combine read and make}
+covid19_lst <- map(urls, read_covid19)
+covid19_lst[[length(covid19_lst)]]
+```
+
+```{r bind}
+covid19_lst <- map(urls, read_covid19)
+bind_rows(covid19_lst)
+```
+
+```{r write}
+covid19-daily-cases <- file.path(tempdir(), "AlphaPart")
+ret <- write.csv(x=res, file=fileName)
+print(ret)
+file.show(ret[1])
+```
+
+
