@@ -1,17 +1,20 @@
 ---
-title: "R Notebook"
-output: html_notebook
+title: "Covid 19 Exploration Project"
+output:
+  html_document:
+    df_print: paged
+  html_notebook: default
+  pdf_document: default
 ---
 
-This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
-
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
 
 ```{r read}
 library(tidyverse)
 covid19 <- read_csv("data/covid19-daily-cases.csv")
 covid19
 ```
+
+
 
 ```{r graph}
 covid19 %>% 
@@ -23,10 +26,9 @@ covid19 %>%
   guides(colour = FALSE)
 ```
 
-
-Fit with log scale because then its normal
-
 ```{r graph log}
+# Fit with log scale so it becomes normal
+
 covid19 %>% 
   ggplot(aes(
     x = date, 
@@ -37,6 +39,7 @@ covid19 %>%
 ```
 
 ```{r graph log scale}
+#change scale for log
 covid19 %>% 
   ggplot(aes(
     x = date, 
@@ -47,7 +50,8 @@ covid19 %>%
   scale_y_log10()
 ```
 
-```{r region}
+```{r countries}
+# sorting the data by countries
 covid19_rel <- covid19 %>% 
   group_by(country_region) %>% 
   mutate(days = as.numeric(date - min(date))) %>% 
@@ -56,7 +60,8 @@ covid19_rel
 ```
 
 ```{r region graph}
-covid19_rel %>% 
+#graph for countries and days since march 1
+world <- covid19_rel %>% 
   ggplot(aes(
     x = days,
     y = confirmed, 
@@ -64,8 +69,10 @@ covid19_rel %>%
   geom_line() +
   scale_y_log10() +
   guides(colour = FALSE)
+world
 ```
 ```{r nz}
+# nz highlighted out of all countries
 covid19_nz <- covid19_rel %>% 
   filter(country_region == "New Zealand")
 p_nz <- covid19_rel %>% 
@@ -79,6 +86,7 @@ p_nz
 ```
 
 ```{r graph nz}
+#changed labels
 p_nz <- p_nz +
   geom_label(aes(
     x = max(days), y = max(confirmed),
@@ -106,6 +114,7 @@ p_nz
 ```
 
 ```{r interactive}
+#make interactive
 library(plotly)
 ggplotly(p_nz)
 ```
