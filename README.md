@@ -2,6 +2,7 @@
 # R Covid-Visualisation
 
 In this project I visualised the data from March 1, 2020 to May 31, 2020.
+Visualisation [here](https://timtamjamlamb.github.io/Covid-Visualisation/).
 
 ![graph screenshot](https://github.com/timtamjamlamb/Covid-Visualisation/blob/main/images/graph.JPG)
 
